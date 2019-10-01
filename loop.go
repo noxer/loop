@@ -15,8 +15,8 @@ var (
 	r  bool
 )
 
-// MainBuffered starts the main loop with a buffered queue. This should be called from the main() function.
-// It will block until Terminate is called.
+// MainBuffered starts the main loop with a buffered queue. This should be
+// called from the main() function. It will block until Terminate is called.
 func MainBuffered(main func(), buffer uint) {
 	m.Lock()
 	if ch != nil {
@@ -37,8 +37,9 @@ func MainBuffered(main func(), buffer uint) {
 	m.Unlock()
 }
 
-// Main creates a main loop with an unbuffered queue. This should be called from the main() function.
-// Attempting to start a second main loop results in a panic.
+// Main creates a main loop with an unbuffered queue. This should be called
+// from the main() function. Attempting to start a second main loop results in
+// a panic.
 func Main(main func()) {
 	MainBuffered(main, 0)
 }
@@ -57,8 +58,8 @@ func Terminate() {
 	m.Unlock()
 }
 
-// Schedule sends a function to the main loop to be executed.
-// The function returns false iff the main loop is not running.
+// Schedule sends a function to the main loop to be executed. The function
+// returns false iff the main loop is not running.
 func Schedule(f func()) bool {
 	m.Lock()
 	if !r {
@@ -72,8 +73,8 @@ func Schedule(f func()) bool {
 	return true
 }
 
-// ScheduleAwait send a function to the main loop and waits until it has been executed.
-// The function returns false iff the main loop is not running.
+// ScheduleAwait send a function to the main loop and waits until it has been
+// executed. The function returns false iff the main loop is not running.
 func ScheduleAwait(f func()) bool {
 	c := make(chan struct{})
 	r := Schedule(func() {
@@ -86,4 +87,15 @@ func ScheduleAwait(f func()) bool {
 
 	<-c
 	return true
+}
+
+// IsRunning indicates if the main looper is currently running.
+// This is just a hint that this package is in use. The main loop may have been
+// started or terminated once you attempt your action.
+func IsRunning() bool {
+	m.Lock()
+	running := r
+	m.Unlock()
+
+	return running
 }
