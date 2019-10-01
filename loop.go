@@ -73,7 +73,7 @@ func Schedule(f func()) bool {
 	return true
 }
 
-// ScheduleAwait send a function to the main loop and waits until it has been
+// ScheduleAwait sends a function to the main loop and waits until it has been
 // executed. The function returns false iff the main loop is not running.
 func ScheduleAwait(f func()) bool {
 	c := make(chan struct{})
@@ -91,7 +91,7 @@ func ScheduleAwait(f func()) bool {
 
 // IsRunning indicates if the main looper is currently running.
 // This is just a hint that this package is in use. The main loop may have been
-// started or terminated once you attempt your action.
+// started or terminated by the time you attempt your action.
 func IsRunning() bool {
 	m.Lock()
 	running := r
